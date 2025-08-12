@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Online Shopping System</title>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Embedded CSS -->
+    <style>
+        /* Section-specific style */
+        section > h2 {
+            color: darkblue;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 4px;
+        }
+
+        /* Pseudo-class for buttons */
+        button:hover {
+            background-color: #ff9900;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body style="background-color: #fafafa; font-family: Arial, sans-serif;"> <!-- Inline CSS -->
+
+    <h1 style="color: #2a4d69; text-align: center;">Online Shopping System</h1> <!-- Inline CSS -->
+
+    <!-- Product images with drag-and-drop -->
+    <section>
+        <h2>Products</h2>
+        <img src="product1.jpg" alt="Product 1" width="200" draggable="true" id="product1" class="product-img" />
+        <img src="product2.jpg" alt="Product 2" width="200" draggable="true" id="product2" class="product-img" />
+    </section>
+
+    <!-- Product videos -->
+    <section>
+        <h2>Product Videos</h2>
+        <video width="320" height="240" controls class="video-style">
+            <source src="product-video.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+    </section>
+
+    <!-- Cart area (drop target) -->
+    <section>
+        <h2>Shopping Cart</h2>
+        <div id="cart">
+            Drag products here
+        </div>
+    </section>
+
+    <!-- Store location with image map -->
+    <section>
+        <h2>Store Locations</h2>
+        <img src="store-map.jpg" alt="Store Locations" usemap="#storemap" width="500" class="map-image" />
+        <map name="storemap">
+            <area shape="rect" coords="34,44,270,350" href="https://maps.google.com/?q=store1" alt="Store 1" />
+            <area shape="circle" coords="500,150,50" href="https://maps.google.com/?q=store2" alt="Store 2" />
+        </map>
+    </section>
+
+    <!-- Show user location -->
+    <section>
+        <h2>Your Location</h2>
+        <button onclick="getLocation()">Show My Location</button>
+        <p id="location">Location not available</p>
+    </section>
+
+    <!-- Purchase form -->
+    <section>
+        <h2>Purchase Form</h2>
+        <form>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required /><br /><br />
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required /><br /><br />
+
+            <label for="payment">Payment Method:</label>
+            <select id="payment" name="payment">
+                <option value="credit">Credit Card</option>
+                <option value="paypal">Paypal</option>
+                <option value="cod">Cash on Delivery</option>
+            </select><br /><br />
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" min="1" max="10" value="1" /><br /><br />
+
+            <input type="submit" value="Purchase" />
+        </form>
+    </section>
+
+    <!-- Script -->
+    <script>
+        // Drag and Drop
+        const products = document.querySelectorAll('img[draggable="true"]');
+        const cart = document.getElementById('cart');
+
+        products.forEach(product => {
+            product.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', e.target.id);
+            });
+        });
+
+        cart.addEventListener('dragover', e => {
+            e.preventDefault();
+            cart.style.backgroundColor = '#f0f0f0';
+        });
+        cart.addEventListener('dragleave', e => {
+            cart.style.backgroundColor = 'white';
+        });
+        cart.addEventListener('drop', e => {
+            e.preventDefault();
+            cart.style.backgroundColor = 'white';
+            const id = e.dataTransfer.getData('text/plain');
+            const draggedProduct = document.getElementById(id);
+            const item = document.createElement('div');
+            item.textContent = draggedProduct.alt;
+            cart.appendChild(item);
+        });
+
+        // Geolocation
+        function getLocation() {
+            const locationElement = document.getElementById('location');
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const lat = position.coords.latitude.toFixed(4);
+                        const lon = position.coords.longitude.toFixed(4);
+                        locationElement.textContent = `Latitude: ${lat}, Longitude: ${lon}`;
+                    },
+                    error => {
+                        locationElement.textContent = 'Unable to retrieve your location';
+                    }
+                );
+            } else {
+                locationElement.textContent = 'Geolocation is not supported by your browser';
+            }
+        }
+    </script>
+</body>
+</html>
